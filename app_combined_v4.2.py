@@ -656,7 +656,7 @@ def main():
                 <br><br>
                 <b>Key Findings:</b>
                 <br>• Aquaculture: Ammonia & DO are dominant factors
-                <br>• Livestock: pH & EC are dominant factors
+                <br>• Livestock: Iron, DO & EC are dominant factors
                 <br>• Other parameters: Minimal statistical influence
                 <br><br>
                 <b>Using Results Correctly:</b>
