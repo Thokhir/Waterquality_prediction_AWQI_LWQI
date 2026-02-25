@@ -764,7 +764,7 @@ def main():
         The trained models focus on 2-3 dominant parameters that most strongly influence 
         water quality in the training data:
         - **Aquaculture:** Ammonia & Dissolved Oxygen
-        - **Livestock:** pH & Electrical Conductivity
+        - **Livestock:** Iron, DO & Electrical Conductivity
         
         Always review individual parameters and use results as decision support, not absolute truth.
         

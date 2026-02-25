@@ -1,7 +1,7 @@
 """
-Combined Water Quality Prediction System - Version 3.2 (ENHANCED)
-Aquaculture (AWQI) + Livestock (LWQI) in one unified application
-ENHANCED: Includes all prediction features from original AWQI app
+Combined Water Quality Prediction System - FINAL MERGED VERSION
+Based on v4.0 structure with v3.2 dashboard, model performance, and parameter guide
+Version 4.1 - Merged Production Ready
 """
 
 import streamlit as st
@@ -9,14 +9,16 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+import sys
 import warnings
+
 warnings.filterwarnings('ignore')
 
 # ============================================================================
 # PAGE CONFIG
 # ============================================================================
 st.set_page_config(
-    page_title="Water Quality Prediction System",
+    page_title="Water Quality Prediction",
     page_icon="💧",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -24,107 +26,96 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    .main { padding: 2rem 1rem; }
-    .metric-box {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        margin: 10px 0;
-    }
-    .info-box {
-        background-color: #e8f4f8;
-        border-left: 5px solid #1f77b4;
-        padding: 15px;
-        margin: 10px 0;
-        border-radius: 5px;
-    }
-    .success-box {
-        background-color: #d4edda;
-        border-left: 5px solid #28a745;
-        padding: 15px;
-        margin: 10px 0;
-        border-radius: 5px;
-    }
-    .warning-box {
-        background-color: #fff3cd;
-        border-left: 5px solid #ffc107;
-        padding: 15px;
-        margin: 10px 0;
-        border-radius: 5px;
-    }
-    .critical-box {
-        background-color: #f8d7da;
-        border-left: 5px solid #dc3545;
-        padding: 15px;
-        margin: 10px 0;
-        border-radius: 5px;
-    }
-    .note-box {
-        background-color: #f5f5f5;
-        border-left: 5px solid #6c757d;
-        padding: 12px;
-        margin: 10px 0;
-        border-radius: 5px;
-        font-size: 12px;
-        color: #333;
-    }
+    .metric-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; margin: 10px 0; }
+    .info-box { background-color: #e8f4f8; border-left: 5px solid #1f77b4; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    .success-box { background-color: #d4edda; border-left: 5px solid #28a745; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    .warning-box { background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    .critical-box { background-color: #f8d7da; border-left: 5px solid #dc3545; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    .note-box { background-color: #f5f5f5; border-left: 5px solid #6c757d; padding: 12px; margin: 10px 0; border-radius: 5px; font-size: 12px; }
 </style>
 """, unsafe_allow_html=True)
 
 # ============================================================================
-# CHECK MODELS
-# ============================================================================
-
-def models_exist():
-    """Check if models are trained"""
-    aqua_path = "models/aquaculture"
-    live_path = "models/livestock"
-    return os.path.exists(aqua_path) and os.path.exists(live_path)
-
-# ============================================================================
-# MODEL LOADING (Cached)
+# ROBUST MODEL LOADING WITH DETAILED DEBUGGING
 # ============================================================================
 
 @st.cache_resource
 def load_system(system_type):
-    """Load all models for selected system"""
+    """Load models for each system with robust error handling"""
     try:
+        system_lower = system_type.lower()
+        
+        # Try multiple possible paths
+        possible_paths = [
+            f"models/{system_lower}",
+            f"./models/{system_lower}",
+            os.path.join("models", system_lower),
+            os.path.join(os.getcwd(), "models", system_lower)
+        ]
+        
+        model_dir = None
+        for path in possible_paths:
+            if os.path.exists(path) and os.path.isdir(path):
+                model_dir = path
+                break
+        
+        if not model_dir:
+            st.error(f"❌ {system_type} models folder not found. Checked: {possible_paths}")
+            return None, None, None, None
+        
         reg_models = {}
         clf_models = {}
-        model_dir = f"models/{system_type}"
         
-        # Regression models
-        for fname in os.listdir(model_dir):
-            if '_reg.pkl' in fname and fname != 'scaler_regression.pkl':
-                model_name = fname.replace('_reg.pkl', '').replace('_', ' ').title()
-                reg_models[model_name] = joblib.load(f"{model_dir}/{fname}")
+        # List all files in directory for debugging
+        files_in_dir = os.listdir(model_dir)
         
-        # Classification models
-        for fname in os.listdir(model_dir):
-            if '_clf.pkl' in fname and fname != 'scaler_classification.pkl':
-                model_name = fname.replace('_clf.pkl', '').replace('_', ' ').title()
-                clf_models[model_name] = joblib.load(f"{model_dir}/{fname}")
+        # Load regression models
+        for fname in files_in_dir:
+            if '_reg.pkl' in fname and 'scaler' not in fname:
+                try:
+                    name = fname.replace('_reg.pkl', '').replace('_', ' ').title()
+                    reg_models[name] = joblib.load(os.path.join(model_dir, fname))
+                except Exception as e:
+                    st.warning(f"Could not load {fname}: {e}")
         
-        # Scalers and encoders
-        scalers = {
-            'regression': joblib.load(f"{model_dir}/scaler_regression.pkl"),
-            'classification': joblib.load(f"{model_dir}/scaler_classification.pkl")
-        }
+        # Load classification models
+        for fname in files_in_dir:
+            if '_clf.pkl' in fname and 'scaler' not in fname:
+                try:
+                    name = fname.replace('_clf.pkl', '').replace('_', ' ').title()
+                    clf_models[name] = joblib.load(os.path.join(model_dir, fname))
+                except Exception as e:
+                    st.warning(f"Could not load {fname}: {e}")
         
-        encoders = {
-            'label_encoder': joblib.load(f"{model_dir}/label_encoder.pkl"),
-            'feature_names': joblib.load(f"{model_dir}/feature_names.pkl"),
-            'class_names': joblib.load(f"{model_dir}/class_names.pkl")
-        }
+        # Load scalers and encoders
+        try:
+            scalers = {
+                'regression': joblib.load(os.path.join(model_dir, 'scaler_regression.pkl')),
+                'classification': joblib.load(os.path.join(model_dir, 'scaler_classification.pkl'))
+            }
+            encoders = {
+                'label_encoder': joblib.load(os.path.join(model_dir, 'label_encoder.pkl')),
+                'feature_names': joblib.load(os.path.join(model_dir, 'feature_names.pkl')),
+                'class_names': joblib.load(os.path.join(model_dir, 'class_names.pkl'))
+            }
+        except Exception as e:
+            st.error(f"❌ Error loading scalers/encoders for {system_type}: {e}")
+            return None, None, None, None
+        
+        if not reg_models:
+            st.error(f"❌ No regression models found for {system_type}")
+            return None, None, None, None
         
         return reg_models, clf_models, scalers, encoders
+    
     except Exception as e:
-        return {}, {}, {}, {}
+        st.error(f"❌ Critical error loading {system_type} models: {str(e)}")
+        import traceback
+        st.error(traceback.format_exc())
+        return None, None, None, None
 
 # ============================================================================
-# UTILITY FUNCTIONS
+# UTILITY FUNCTIONS (from v3.2)
 # ============================================================================
 
 def get_quality_interpretation(value, system_type):
@@ -162,8 +153,8 @@ def get_quality_interpretation(value, system_type):
                 'emoji': '🚫',
                 'action': 'URGENT: Critical treatment or replacement needed.'
             }
-    else:  # Livestock
-        if value < 40:
+    else:  # Livestock - Reversed conditions for classification
+        if value > 80:
             return {
                 'class': 'Good',
                 'description': '✅ Good water quality - Suitable for livestock',
@@ -171,7 +162,7 @@ def get_quality_interpretation(value, system_type):
                 'emoji': '✅',
                 'action': 'No action needed. Continue monitoring.'
             }
-        elif value < 80:
+        elif value > 40:
             return {
                 'class': 'Fair',
                 'description': '⚠️ Fair water quality - Monitor closely, some improvement needed',
@@ -291,27 +282,9 @@ def main():
     <div style="text-align: center; margin-bottom: 2rem;">
         <h1>💧 Combined Water Quality Prediction System 💧</h1>
         <p><i>Aquaculture (AWQI) + Livestock (LWQI) Analysis</i></p>
-        <p style="color: #666; font-size: 14px;">Version 3.2 - Enhanced Unified Quality Assessment Tool</p>
+        <p style="color: #666; font-size: 14px;">Version 4.1 - Merged Unified Quality Assessment Tool</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Check if models exist
-    if not models_exist():
-        st.error("""
-        ❌ **Models Not Found!**
-        
-        Please run the training script locally first:
-        ```bash
-        python train_combined_models.py
-        ```
-        Then push models to GitHub:
-        ```bash
-        git add -f models/
-        git commit -m "Add trained models"
-        git push
-        ```
-        """)
-        return
     
     # System Selection
     st.markdown("""
@@ -348,7 +321,7 @@ def main():
     )
     
     # ========================================================================
-    # PAGE: PREDICTION DASHBOARD
+    # PAGE: PREDICTION DASHBOARD (from v3.2)
     # ========================================================================
     if page == "📊 Prediction Dashboard":
         st.header(f"{st.session_state.system} - Water Quality Prediction")
@@ -698,7 +671,7 @@ def main():
                 st.error(f"Error during prediction: {str(e)}")
     
     # ========================================================================
-    # PAGE: PARAMETER GUIDE
+    # PAGE: PARAMETER GUIDE (from v3.2)
     # ========================================================================
     elif page == "📚 Parameter Guide":
         st.header("Water Quality Parameters Reference")
@@ -735,7 +708,7 @@ def main():
                 st.write(f"**Description:** {info['desc']}")
     
     # ========================================================================
-    # PAGE: MODEL PERFORMANCE
+    # PAGE: MODEL PERFORMANCE (from v3.2)
     # ========================================================================
     elif page == "📈 Model Performance":
         st.header("Machine Learning Model Performance")
@@ -765,7 +738,7 @@ def main():
     elif page == "ℹ️ About":
         st.header("About This System")
         st.markdown(f"""
-        ## Combined Water Quality Prediction System - Version 3.2
+        ## Combined Water Quality Prediction System - Version 4.1
         
         **Current System:** {st.session_state.system}
         
@@ -800,7 +773,7 @@ def main():
         - Web Framework: Streamlit
         - Models: 24 total (12 per system: 6 regression + 6 classification)
         
-        **Version:** 3.2 | **Status:** ✅ Production Ready
+        **Version:** 4.1 | **Status:** ✅ Production Ready
         """)
 
 if __name__ == "__main__":
