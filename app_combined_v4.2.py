@@ -383,7 +383,7 @@ def main():
             with col3:
                 st.subheader("Quality Indicators")
                 ec = st.number_input("EC (µS/cm)", min_value=0.0, max_value=2000.0, value=300.0, step=10.0)
-                iron = st.number_input("Iron (mg/L)", min_value=0.0, max_value=100.0, value=2.0, step=0.1)
+                iron = st.number_input("Iron (mg/L)", min_value=0.0, max_value=100.0, value=0.03, step=0.1)
             
             time_value = st.slider("Time (hours)", min_value=0, max_value=23, value=12, step=1)
             time_sin = np.sin(2 * np.pi * time_value / 12)
