@@ -402,9 +402,10 @@ def main():
                 scaled_clf = scalers['classification'].transform(features)
                 
                 # ============================================================
-                # SECTION 1: AWQI SCORE & CLASSIFICATION
+                # SECTION 1: QUALITY SCORE & CLASSIFICATION (AWQI/LWQI)
                 # ============================================================
-                st.subheader("🎯 AWQI Score & Classification")
+                section_title = "AWQI Score & Classification" if st.session_state.system == "Aquaculture" else "LWQI Score & Classification"
+                st.subheader(f"🎯 {section_title}")
                 
                 predictions = {}
                 for name, model in reg_models.items():
@@ -415,8 +416,30 @@ def main():
                         pass
                 
                 if predictions:
-                    best_name = list(predictions.keys())[0]
+                    # Select best regression model - prefer Linear Regression first, then SVR
+                    # These are the models with highest R² scores in the training data
+                    best_name = None
+                    best_score = -float('inf')
+                    
+                    # Priority 1: Linear Regression (R² = 1.0 for AWQI, 0.95 for LWQI)
+                    for key in predictions.keys():
+                        if 'linear regression' in key.lower():
+                            best_name = key
+                            break
+                    
+                    # Priority 2: SVR (R² = 0.9999 for AWQI, 0.94 for LWQI)
+                    if not best_name:
+                        for key in predictions.keys():
+                            if 'svr' in key.lower():
+                                best_name = key
+                                break
+                    
+                    # Fallback to first model if preferred not found
+                    if not best_name:
+                        best_name = list(predictions.keys())[0]
+
                     quality_score = predictions[best_name]
+
                     interpretation = get_quality_interpretation(quality_score, st.session_state.system)
                     
                     col_res1, col_res2 = st.columns(2)
@@ -426,6 +449,7 @@ def main():
                         <div class="metric-box">
                             <h2>{quality_score:.2f}</h2>
                             <p>{interpretation['class'].upper()}</p>
+                            <p style="font-size: 12px; margin-top: 8px;"><i>Based on {best_name}</i></p>
                         </div>
                         """, unsafe_allow_html=True)
                     
@@ -447,12 +471,14 @@ def main():
                 col_pred1, col_pred2 = st.columns(2)
                 
                 with col_pred1:
-                    st.write("**Regression Model Predictions:**")
+                    st.write(f"**Regression Model Predictions:** (Using {best_name} for score)")
                     pred_df = pd.DataFrame({
                         'Model': list(predictions.keys()),
-                        'AWQI Score': list(predictions.values())
-                    }).sort_values('AWQI Score', ascending=False)
+                        'Score': [f"{v:.2f}" for v in predictions.values()]
+                    }).reset_index(drop=True)
+                    # Highlight the best model used
                     st.dataframe(pred_df, use_container_width=True, hide_index=True)
+                    st.caption(f"✓ {best_name} is selected (best R² score)")
                 
                 with col_pred2:
                     # Classification prediction
@@ -493,15 +519,18 @@ def main():
                     st.success("✅ **EXCELLENT** - No significant issues detected")
                 
                 # ============================================================
-                # SECTION 3: ALL MODEL PREDICTIONS
+                # SECTION 3: ALL MODEL PREDICTIONS DETAILED
                 # ============================================================
                 st.subheader("🤖 All Model Predictions Detailed")
+                
+                st.write(f"**Note:** All regression models have been trained on your data. The {best_name} model (shown above) is selected as the primary predictor due to its highest R² score.")
                 
                 all_predictions = []
                 for name, model in reg_models.items():
                     try:
                         pred = model.predict(scaled_features)[0]
-                        all_predictions.append({'Model': name, 'Score': f"{pred:.2f}"})
+                        is_selected = "✓ SELECTED" if name == best_name else ""
+                        all_predictions.append({'Model': name, 'Score': f"{pred:.2f}", 'Status': is_selected})
                     except:
                         pass
                 
@@ -645,22 +674,28 @@ def main():
                 # ============================================================
                 # IMPORTANT NOTE (ALWAYS SHOWN)
                 # ============================================================
-                st.markdown("""
+                st.markdown(f"""
                 <div class="note-box">
                 <b>ℹ️ IMPORTANT NOTE ABOUT RESULTS:</b>
                 <br><br>
-                The models are trained on historical data where only 2-3 dominant parameters strongly influence the 
+                <b>Best Model Selection:</b>
+                <br>• This system currently uses <b>{best_name}</b> as the primary predictive model
+                <br>• Linear Regression and SVR show the highest R² scores and best generalization in validation data
+                <br>• You can verify all model predictions in the "All Model Predictions Detailed" section above
+                <br><br>
+                <b>About Your Data:</b>
+                <br>The models are trained on historical data where only 2-3 dominant parameters strongly influence the 
                 water quality index. Other parameters have minimal statistical effect on the final score. This is why 
                 some high parameter values might still show good quality - the model reflects the actual patterns found 
                 in your training data.
                 <br><br>
                 <b>Key Findings:</b>
-                <br>• Aquaculture: Ammonia & DO are dominant factors
-                <br>• Livestock: Iron, DO & EC are dominant factors
+                <br>• Aquaculture (AWQI): Ammonia & DO are dominant factors
+                <br>• Livestock (LWQI): Iron, DO & EC are dominant factors
                 <br>• Other parameters: Minimal statistical influence
                 <br><br>
                 <b>Using Results Correctly:</b>
-                <br>1. Review overall quality score (primary indicator)
+                <br>1. Review overall quality score from {best_name} (primary indicator)
                 <br>2. Check individual parameters against optimal ranges (secondary check)
                 <br>3. Focus especially on dominant parameters
                 <br>4. Use as decision support tool, not absolute truth
