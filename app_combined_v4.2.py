@@ -362,7 +362,7 @@ def main():
             input_dict = {
                 'TDS': tds, 'DO': do, 'Nitrate': nitrate, 'TH': th, 'pH': ph,
                 'Chlorides': chlorides, 'Alkalinity': alkalinity, 'EC': ec,
-                'Ammonia': ammonia, 'Time_sin': 0, 'Time_cos': 0
+                'Ammonia': ammonia, 'Time_sin': time_sin, 'Time_cos': time_cos
             }
         
         else:  # Livestock
@@ -392,7 +392,7 @@ def main():
             input_dict = {
                 'DO': do, 'Nitrate': nitrate, 'CaH': cah, 'pH': ph,
                 'Sulphates': sulphates, 'Sodium': na, 'EC': ec, 'Iron': iron,
-                'Time_sin': 0, 'Time_cos': 0
+                'Time_sin': time_sin, 'Time_cos': time_cos
             }
         
         if st.button("🔍 Predict Water Quality", use_container_width=True, type="primary"):
@@ -752,8 +752,8 @@ def main():
             st.subheader("Aquaculture (AWQI) Models - Performance Metrics")
             perf_data = {
                 'Model': ['Linear Regression', 'SVR', 'Random Forest', 'Decision Tree', 'XGBoost', 'ANN'],
-                'R² Score': [1.0000, 0.9999, 0.9482, 0.8717, 0.8940, 0.9734],
-                'MSE': [0.0000, 0.0058, 6.0648, 15.0384, 12.4190, 3.1206],
+                'R² Score': [0.9999, 0.9999, 0.9482, 0.8717, 0.8940, 0.9734],
+                'MSE': [0.0004, 0.0058, 6.0648, 15.0384, 12.4190, 3.1206],
                 
             }
         else:
