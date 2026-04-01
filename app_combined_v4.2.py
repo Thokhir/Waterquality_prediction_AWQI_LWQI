@@ -344,11 +344,13 @@ def main():
                 alkalinity = st.number_input("Alkalinity (mg/L)", min_value=0.0, max_value=2000.0, value=70.0, step=1.0)
             
             with col2:
+                st.markdown("<br>", unsafe_allow_html=True)
                 do = st.number_input("DO (mg/L)", min_value=0.0, max_value=15.0, value=5.0, step=0.1)
                 chlorides = st.number_input("Chlorides (mg/L)", min_value=0.0, max_value=3000.0, value=25.0, step=1.0)
                 ec = st.number_input("EC (µS/cm)", min_value=0.0, max_value=10000.0, value=280.0, step=10.0)
             
             with col3:
+                st.markdown("<br>", unsafe_allow_html=True)
                 nitrate = st.number_input("Nitrate (mg/L)", min_value=0.0, max_value=2000.0, value=0.4, step=0.1)
                 th = st.number_input("Total Hardness (mg/L)", min_value=0.0, max_value=2000.0, value=140.0, step=1.0)
                 ammonia = st.number_input("Ammonia (mg/L)", min_value=0.0, max_value=100.0, value=0.01, step=0.001)
@@ -357,7 +359,7 @@ def main():
             input_dict = {
                 'TDS': tds, 'DO': do, 'Nitrate': nitrate, 'TH': th, 'pH': ph,
                 'Chlorides': chlorides, 'Alkalinity': alkalinity, 'EC': ec,
-                'Ammonia': ammonia, 'Time_sin': time_sin, 'Time_cos': time_cos
+                'Ammonia': ammonia, 
             }
         
         else:  # Livestock
@@ -370,11 +372,13 @@ def main():
                 na = st.number_input("Sodium (mg/L)", min_value=0.0, max_value=500.0, value=20.0, step=0.5)
             
             with col2:
+                st.markdown("<br>", unsafe_allow_html=True)
                 nitrate = st.number_input("Nitrate (mg/L)", min_value=0.0, max_value=500.0, value=0.5, step=0.1)
                 cah = st.number_input("Calcium Hardness (mg/L)", min_value=0.0, max_value=500.0, value=8.0, step=1.0)
                 sulphates = st.number_input("Sulphates (mg/L)", min_value=0.0, max_value=500.0, value=6.0, step=0.1)
             
             with col3:
+                st.markdown("<br>", unsafe_allow_html=True)
                 ec = st.number_input("EC (µS/cm)", min_value=0.0, max_value=2000.0, value=300.0, step=10.0)
                 iron = st.number_input("Iron (mg/L)", min_value=0.0, max_value=100.0, value=0.03, step=0.1)
             
@@ -382,7 +386,7 @@ def main():
             input_dict = {
                 'DO': do, 'Nitrate': nitrate, 'CaH': cah, 'pH': ph,
                 'Sulphates': sulphates, 'Sodium': na, 'EC': ec, 'Iron': iron,
-                'Time_sin': time_sin, 'Time_cos': time_cos
+                
             }
         
         if st.button("🔍 Predict Water Quality", use_container_width=True, type="primary"):
