@@ -349,15 +349,16 @@ def main():
                 ec = st.number_input("EC (µS/cm)", min_value=0.0, max_value=10000.0, value=280.0, step=10.0)
             
             with col3:
+                st.subheader("Pollution Indicators")
                 nitrate = st.number_input("Nitrate (mg/L)", min_value=0.0, max_value=2000.0, value=0.4, step=0.1)
                 th = st.number_input("Total Hardness (mg/L)", min_value=0.0, max_value=2000.0, value=140.0, step=1.0)
                 ammonia = st.number_input("Ammonia (mg/L)", min_value=0.0, max_value=100.0, value=0.01, step=0.001)
             
-          
+            
             input_dict = {
                 'TDS': tds, 'DO': do, 'Nitrate': nitrate, 'TH': th, 'pH': ph,
                 'Chlorides': chlorides, 'Alkalinity': alkalinity, 'EC': ec,
-                'Ammonia': ammonia, 'Time_sin': time_sin, 'Time_cos': time_cos
+                'Ammonia': ammonia
             }
         
         else:  # Livestock
@@ -370,15 +371,17 @@ def main():
                 na = st.number_input("Sodium (mg/L)", min_value=0.0, max_value=500.0, value=20.0, step=0.5)
             
             with col2:
+                st.subheader("Mineral Content")
                 nitrate = st.number_input("Nitrate (mg/L)", min_value=0.0, max_value=500.0, value=0.5, step=0.1)
                 cah = st.number_input("Calcium Hardness (mg/L)", min_value=0.0, max_value=500.0, value=8.0, step=1.0)
                 sulphates = st.number_input("Sulphates (mg/L)", min_value=0.0, max_value=500.0, value=6.0, step=0.1)
             
             with col3:
+                st.subheader("Quality Indicators")
                 ec = st.number_input("EC (µS/cm)", min_value=0.0, max_value=2000.0, value=300.0, step=10.0)
                 iron = st.number_input("Iron (mg/L)", min_value=0.0, max_value=100.0, value=0.03, step=0.1)
             
-           
+            
             input_dict = {
                 'DO': do, 'Nitrate': nitrate, 'CaH': cah, 'pH': ph,
                 'Sulphates': sulphates, 'Sodium': na, 'EC': ec, 'Iron': iron,
@@ -520,7 +523,7 @@ def main():
                     try:
                         pred = model.predict(scaled_features)[0]
                         is_selected = "✓ SELECTED" if name == best_name else ""
-                        all_predictions.append({'Model': name, 'Score': f"{pred:.2f}", 'Status': is_selected})
+                        all_predictions.append({'Model': name, 'Score': f"{pred:.2f}"})
                     except:
                         pass
                 
@@ -744,7 +747,6 @@ def main():
                 'Model': ['Linear Regression', 'SVR', 'Random Forest', 'Decision Tree', 'XGBoost', 'ANN'],
                 'R² Score': [1.0000, 0.9999, 0.9482, 0.8717, 0.8940, 0.9734],
                 'MSE': [0.0000, 0.0058, 6.0648, 15.0384, 12.4190, 3.1206],
-                
             }
         else:
             st.subheader("Livestock (LWQI) Models - Performance Metrics")
@@ -752,7 +754,6 @@ def main():
                 'Model': ['Linear Regression', 'SVR', 'Random Forest', 'Decision Tree', 'XGBoost', 'ANN'],
                 'R² Score': [0.95, 0.94, 0.92, 0.88, 0.90, 0.91],
                 'MSE': [2.5, 3.1, 4.2, 5.8, 4.5, 4.8],
-                
             }
         
         st.dataframe(pd.DataFrame(perf_data), use_container_width=True, hide_index=True)
