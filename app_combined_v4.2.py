@@ -362,7 +362,7 @@ def main():
             input_dict = {
                 'TDS': tds, 'DO': do, 'Nitrate': nitrate, 'TH': th, 'pH': ph,
                 'Chlorides': chlorides, 'Alkalinity': alkalinity, 'EC': ec,
-                'Ammonia': ammonia, 'Time_sin': time_sin, 'Time_cos': time_cos
+                'Ammonia': ammonia, 'Time_sin': 0, 'Time_cos': 0
             }
         
         else:  # Livestock
@@ -392,7 +392,7 @@ def main():
             input_dict = {
                 'DO': do, 'Nitrate': nitrate, 'CaH': cah, 'pH': ph,
                 'Sulphates': sulphates, 'Sodium': na, 'EC': ec, 'Iron': iron,
-                'Time_sin': time_sin, 'Time_cos': time_cos
+                'Time_sin': 0, 'Time_cos': 0
             }
         
         if st.button("🔍 Predict Water Quality", use_container_width=True, type="primary"):
