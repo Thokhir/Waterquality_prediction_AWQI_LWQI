@@ -752,8 +752,8 @@ def main():
             st.subheader("Aquaculture (AWQI) Models - Performance Metrics")
             perf_data = {
                 'Model': ['Linear Regression', 'SVR', 'Random Forest', 'Decision Tree', 'XGBoost', 'ANN'],
-                'R² Score': [0.9999, 0.9999, 0.9482, 0.8717, 0.8940, 0.9734],
-                'MSE': [0.0004, 0.0058, 6.0648, 15.0384, 12.4190, 3.1206],
+                'R² Score': [0.9999, 0.9999, 0.9482, 0.8717, 0.8940, 0.9062],
+                'MSE': [0.0004, 0.0058, 6.0648, 15.0384, 12.4190, 10.9935],
                 
             }
         else:
