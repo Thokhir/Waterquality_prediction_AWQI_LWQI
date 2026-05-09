@@ -280,7 +280,7 @@ def main():
     # Header
     st.markdown("""
     <div style="text-align: center; margin-bottom: 2rem;">
-        <h1>💧 Combined Water Quality Prediction System 💧</h1>
+        <h1>💧 Dual Water Quality Prediction System 💧</h1>
         <p><i>Aquaculture (AWQI) + Livestock (LWQI) Analysis</i></p>
         <p style="color: #666; font-size: 14px;">Version 4.1 - Merged Unified Quality Assessment Tool</p>
     </div>
@@ -498,45 +498,45 @@ def main():
                             pass
                 
                 # Severity Assessment
-                severity_score, critical_issues = get_severity_level(input_dict, st.session_state.system)
+                # severity_score, critical_issues = get_severity_level(input_dict, st.session_state.system)
                 
-                st.write("**Overall Severity Assessment:**")
-                if severity_score >= 6:
-                    st.error(f"🚨 **CRITICAL SEVERITY** - Multiple severe issues detected! (Score: {severity_score}/10)")
-                    if critical_issues:
-                        for issue in critical_issues:
-                            st.error(f"• {issue}")
-                elif severity_score >= 4:
-                    st.warning(f"🔴 **HIGH SEVERITY** - Significant problems detected (Score: {severity_score}/10)")
-                    if critical_issues:
-                        for issue in critical_issues:
-                            st.warning(f"• {issue}")
-                elif severity_score >= 2:
-                    st.warning(f"🟡 **MODERATE SEVERITY** - Issues present (Score: {severity_score}/10)")
-                elif severity_score >= 1:
-                    st.info(f"🟢 **LOW SEVERITY** - Minor issues (Score: {severity_score}/10)")
-                else:
-                    st.success("✅ **EXCELLENT** - No significant issues detected")
+                # st.write("**Overall Severity Assessment:**")
+                # if severity_score >= 6:
+                #     st.error(f"🚨 **CRITICAL SEVERITY** - Multiple severe issues detected! (Score: {severity_score}/10)")
+                #     if critical_issues:
+                #         for issue in critical_issues:
+                #             st.error(f"• {issue}")
+                # elif severity_score >= 4:
+                #     st.warning(f"🔴 **HIGH SEVERITY** - Significant problems detected (Score: {severity_score}/10)")
+                #     if critical_issues:
+                #         for issue in critical_issues:
+                #             st.warning(f"• {issue}")
+                # elif severity_score >= 2:
+                #     st.warning(f"🟡 **MODERATE SEVERITY** - Issues present (Score: {severity_score}/10)")
+                # elif severity_score >= 1:
+                #     st.info(f"🟢 **LOW SEVERITY** - Minor issues (Score: {severity_score}/10)")
+                # else:
+                #     st.success("✅ **EXCELLENT** - No significant issues detected")
                 
                 # ============================================================
                 # SECTION 3: ALL MODEL PREDICTIONS DETAILED
                 # ============================================================
-                st.subheader("🤖 All Model Predictions Detailed")
+                # st.subheader("🤖 All Model Predictions Detailed")
                 
-                st.write(f"**Note:** All regression models have been trained on your data. The {best_name} model (shown above) is selected as the primary predictor due to its highest R² score.")
+                # st.write(f"**Note:** All regression models have been trained on your data. The {best_name} model (shown above) is selected as the primary predictor due to its highest R² score.")
                 
-                all_predictions = []
-                for name, model in reg_models.items():
-                    try:
-                        pred = model.predict(scaled_features)[0]
-                        is_selected = "✓ SELECTED" if name == best_name else ""
-                        all_predictions.append({'Model': name, 'Score': f"{pred:.2f}", 'Status': is_selected})
-                    except:
-                        pass
+                # all_predictions = []
+                # for name, model in reg_models.items():
+                #     try:
+                #         pred = model.predict(scaled_features)[0]
+                #         is_selected = "✓ SELECTED" if name == best_name else ""
+                #         all_predictions.append({'Model': name, 'Score': f"{pred:.2f}", 'Status': is_selected})
+                #     except:
+                #         pass
                 
-                if all_predictions:
-                    all_pred_df = pd.DataFrame(all_predictions)
-                    st.dataframe(all_pred_df, use_container_width=True, hide_index=True)
+                # if all_predictions:
+                #     all_pred_df = pd.DataFrame(all_predictions)
+                #     st.dataframe(all_pred_df, use_container_width=True, hide_index=True)
                 
                 # ============================================================
                 # SECTION 4: DETAILED WATER QUALITY ASSESSMENT & RECOMMENDATIONS
@@ -743,7 +743,7 @@ def main():
                 st.write(f"**Description:** {info['desc']}")
     
     # ========================================================================
-    # PAGE: MODEL PERFORMANCE (from v3.2)
+    # PAGE: MODEL PERFORMANCE (from v4.2)
     # ========================================================================
     elif page == "📈 Model Performance":
         st.header("Machine Learning Model Performance")
