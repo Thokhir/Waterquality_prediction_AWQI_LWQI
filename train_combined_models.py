@@ -20,6 +20,9 @@ from sklearn.neural_network import MLPRegressor, MLPClassifier
 import warnings
 warnings.filterwarnings('ignore')
 
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
 print("=" * 80)
 print("COMBINED WATER QUALITY TRAINING - AQUACULTURE + LIVESTOCK")
 print("=" * 80)
@@ -36,7 +39,7 @@ print("TRAINING AQUACULTURE (AWQI) MODELS")
 print("="*80)
 
 print("\n[1/6] Loading Aquaculture dataset...")
-df_aqua = pd.read_csv('Aquaculture.csv')
+df_aqua = pd.read_csv(os.path.join(script_dir, 'Aquaculture.csv'))
 print(f"✓ Loaded: {df_aqua.shape[0]} samples, {df_aqua.shape[1]} features")
 
 print("\n[2/6] Engineering Aquaculture features...")
@@ -83,6 +86,7 @@ aqua_reg_models = {
 }
 
 aqua_best_reg_models = {}
+aqua_reg_metrics = {}
 for name, info in aqua_reg_models.items():
     model = info['model']
     param_grid = info['param_grid']
@@ -99,6 +103,7 @@ for name, info in aqua_reg_models.items():
     y_pred = best_model.predict(X_test_aqua_scaled)
     mse = mean_squared_error(y_test_aqua, y_pred)
     r2 = r2_score(y_test_aqua, y_pred)
+    aqua_reg_metrics[name] = {'R2': r2, 'MSE': mse}
     print(f"  ✓ {name:20s} - R²: {r2:.4f}, MSE: {mse:.4f}")
 
 print("\n[4/6] Training Aquaculture Classification Models...")
@@ -147,6 +152,7 @@ aqua_clf_models = {
 }
 
 aqua_best_clf_models = {}
+aqua_clf_metrics = {}
 for name, info in aqua_clf_models.items():
     model = info['model']
     param_grid = info['param_grid']
@@ -158,6 +164,7 @@ for name, info in aqua_clf_models.items():
     aqua_best_clf_models[name] = best_model
     y_pred = best_model.predict(X_test_aqua_clf_scaled)
     acc = accuracy_score(y_test_aqua_clf, y_pred)
+    aqua_clf_metrics[name] = {'Accuracy': acc}
     print(f"  ✓ {name:20s} - Accuracy: {acc:.4f}")
 
 # ============================================================================
@@ -168,14 +175,14 @@ print("TRAINING LIVESTOCK (LWQI) MODELS")
 print("="*80)
 
 print("\n[1/6] Loading Livestock dataset...")
-df_live = pd.read_csv('Live_stock.csv')
+df_live = pd.read_csv(os.path.join(script_dir, 'Live_stock.csv'))
 print(f"✓ Loaded: {df_live.shape[0]} samples, {df_live.shape[1]} features")
 
 print("\n[2/6] Engineering Livestock features...")
 df_live['Time_sin'] = np.sin(2 * np.pi * df_live['Time'] / 12)
 df_live['Time_cos'] = np.cos(2 * np.pi * df_live['Time'] / 12)
 
-X_live = df_live.drop(['LWQI', 'Code', 'Time', 'Seasons'], axis=1)
+X_live = df_live.drop(['LWQI', 'Code', 'Time'], axis=1)
 y_live_reg = df_live['LWQI']
 
 X_train_live, X_test_live, y_train_live, y_test_live = train_test_split(
@@ -215,6 +222,7 @@ live_reg_models = {
 }
 
 live_best_reg_models = {}
+live_reg_metrics = {}
 for name, info in live_reg_models.items():
     model = info['model']
     param_grid = info['param_grid']
@@ -231,6 +239,7 @@ for name, info in live_reg_models.items():
     y_pred = best_model.predict(X_test_live_scaled)
     mse = mean_squared_error(y_test_live, y_pred)
     r2 = r2_score(y_test_live, y_pred)
+    live_reg_metrics[name] = {'R2': r2, 'MSE': mse}
     print(f"  ✓ {name:20s} - R²: {r2:.4f}, MSE: {mse:.4f}")
 
 print("\n[4/6] Training Livestock Classification Models...")
@@ -279,6 +288,7 @@ live_clf_models = {
 }
 
 live_best_clf_models = {}
+live_clf_metrics = {}
 for name, info in live_clf_models.items():
     model = info['model']
     param_grid = info['param_grid']
@@ -290,16 +300,17 @@ for name, info in live_clf_models.items():
     live_best_clf_models[name] = best_model
     y_pred = best_model.predict(X_test_live_clf_scaled)
     acc = accuracy_score(y_test_live_clf, y_pred)
+    live_clf_metrics[name] = {'Accuracy': acc}
     print(f"  ✓ {name:20s} - Accuracy: {acc:.4f}")
 
 # ============================================================================
 # SAVE ALL MODELS
 # ============================================================================
 print("\n" + "="*80)
-print("SAVING ALL MODELS")
+print("SAVING ALL MODELS AND METRICS")
 print("="*80)
 
-print("\n[5/6] Saving Aquaculture models...")
+print("\n[5/6] Saving Aquaculture models and metrics...")
 for name, model in aqua_best_reg_models.items():
     filename = f"models/aquaculture/{name.replace(' ', '_').lower()}_reg.pkl"
     joblib.dump(model, filename)
@@ -315,9 +326,13 @@ joblib.dump(scaler_aqua_clf, "models/aquaculture/scaler_classification.pkl")
 joblib.dump(le_aqua, "models/aquaculture/label_encoder.pkl")
 joblib.dump(list(X_aqua.columns), "models/aquaculture/feature_names.pkl")
 joblib.dump(le_aqua.classes_, "models/aquaculture/class_names.pkl")
-print(f"  ✓ Scalers and encoders saved")
 
-print("\n[6/6] Saving Livestock models...")
+# Save Aquaculture metrics
+joblib.dump(aqua_reg_metrics, "models/aquaculture/regression_metrics.pkl")
+joblib.dump(aqua_clf_metrics, "models/aquaculture/classification_metrics.pkl")
+print(f"  ✓ Scalers, encoders, and metrics saved")
+
+print("\n[6/6] Saving Livestock models and metrics...")
 for name, model in live_best_reg_models.items():
     filename = f"models/livestock/{name.replace(' ', '_').lower()}_reg.pkl"
     joblib.dump(model, filename)
@@ -333,12 +348,19 @@ joblib.dump(scaler_live_clf, "models/livestock/scaler_classification.pkl")
 joblib.dump(le_live, "models/livestock/label_encoder.pkl")
 joblib.dump(list(X_live.columns), "models/livestock/feature_names.pkl")
 joblib.dump(le_live.classes_, "models/livestock/class_names.pkl")
-print(f"  ✓ Scalers and encoders saved")
+
+# Save Livestock metrics
+joblib.dump(live_reg_metrics, "models/livestock/regression_metrics.pkl")
+joblib.dump(live_clf_metrics, "models/livestock/classification_metrics.pkl")
+print(f"  ✓ Scalers, encoders, and metrics saved")
 
 print("\n" + "="*80)
-print("✅ TRAINING COMPLETE!")
+print("✅ TRAINING AND METRICS SAVING COMPLETE!")
 print("="*80)
-print("\nModels saved in:")
+print("\nModels and metrics saved in:")
 print("  • models/aquaculture/")
 print("  • models/livestock/")
+print("\nMetrics files:")
+print("  • regression_metrics.pkl (R² and MSE for regression models)")
+print("  • classification_metrics.pkl (Accuracy for classification models)")
 print("\nReady for Streamlit deployment!")

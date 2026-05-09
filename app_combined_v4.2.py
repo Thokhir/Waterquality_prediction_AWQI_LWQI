@@ -760,8 +760,8 @@ def main():
             st.subheader("Livestock (LWQI) Models - Performance Metrics")
             perf_data = {
                 'Model': ['Linear Regression', 'SVR', 'Random Forest', 'Decision Tree', 'XGBoost', 'ANN'],
-                'R² Score': [0.95, 0.94, 0.92, 0.88, 0.90, 0.91],
-                'MSE': [2.5, 3.1, 4.2, 5.8, 4.5, 4.8],
+                'R² Score': [0.9999, 0.999, 0.915, 0.894, 0.933, -0.602],
+                'MSE': [0.00001, 0.004, 51.49, 64.69, 40.68, 980.72],
                 
             }
         
