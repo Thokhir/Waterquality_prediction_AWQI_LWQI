@@ -20,6 +20,9 @@ from sklearn.neural_network import MLPRegressor, MLPClassifier
 import warnings
 warnings.filterwarnings('ignore')
 
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
 print("=" * 80)
 print("COMBINED WATER QUALITY TRAINING - AQUACULTURE + LIVESTOCK")
 print("=" * 80)
@@ -36,7 +39,7 @@ print("TRAINING AQUACULTURE (AWQI) MODELS")
 print("="*80)
 
 print("\n[1/6] Loading Aquaculture dataset...")
-df_aqua = pd.read_csv('Aquaculture.csv')
+df_aqua = pd.read_csv(os.path.join(script_dir, 'Aquaculture.csv'))
 print(f"✓ Loaded: {df_aqua.shape[0]} samples, {df_aqua.shape[1]} features")
 
 print("\n[2/6] Engineering Aquaculture features...")
@@ -168,7 +171,7 @@ print("TRAINING LIVESTOCK (LWQI) MODELS")
 print("="*80)
 
 print("\n[1/6] Loading Livestock dataset...")
-df_live = pd.read_csv('Live_stock.csv')
+df_live = pd.read_csv(os.path.join(script_dir, 'Live_stock.csv'))
 print(f"✓ Loaded: {df_live.shape[0]} samples, {df_live.shape[1]} features")
 
 print("\n[2/6] Engineering Livestock features...")
