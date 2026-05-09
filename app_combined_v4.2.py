@@ -1,7 +1,7 @@
 """
 Combined Water Quality Prediction System - FINAL MERGED VERSION
 Based on v4.0 structure with v3.2 dashboard, model performance, and parameter guide
-Version 4.1 - Merged Production Ready
+Version 4.2 - Merged Unified Quality Assessment Tool
 """
 
 import streamlit as st
@@ -115,7 +115,7 @@ def load_system(system_type):
         return None, None, None, None
 
 # ============================================================================
-# UTILITY FUNCTIONS (from v3.2)
+# UTILITY FUNCTIONS (from v4.2)
 # ============================================================================
 
 def get_quality_interpretation(value, system_type):
@@ -282,7 +282,7 @@ def main():
     <div style="text-align: center; margin-bottom: 2rem;">
         <h1>💧 Dual Water Quality Prediction System 💧</h1>
         <p><i>Aquaculture (AWQI) + Livestock (LWQI) Analysis</i></p>
-        <p style="color: #666; font-size: 14px;">Version 4.1 - Merged Unified Quality Assessment Tool</p>
+        <p style="color: #666; font-size: 14px;">Version 4.2 - Merged Unified Quality Assessment Tool</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -321,7 +321,7 @@ def main():
     )
     
     # ========================================================================
-    # PAGE: PREDICTION DASHBOARD (from v3.2)
+    # PAGE: PREDICTION DASHBOARD (from v4.2)
     # ========================================================================
     if page == "📊 Prediction Dashboard":
         st.header(f"{st.session_state.system} - Water Quality Prediction")
@@ -773,7 +773,7 @@ def main():
     elif page == "ℹ️ About":
         st.header("About This System")
         st.markdown(f"""
-        ## Combined Water Quality Prediction System - Version 4.1
+        ## Combined Water Quality Prediction System - Version 4.2
         
         **Current System:** {st.session_state.system}
         
@@ -808,7 +808,7 @@ def main():
         - Web Framework: Streamlit
         - Models: 24 total (12 per system: 6 regression + 6 classification)
         
-        **Version:** 4.1 | **Status:** ✅ Production Ready
+        **Version:** 4.2 | **Status:** ✅ Production Ready
         """)
 
 if __name__ == "__main__":
