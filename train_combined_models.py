@@ -182,7 +182,8 @@ print("\n[2/6] Engineering Livestock features...")
 df_live['Time_sin'] = np.sin(2 * np.pi * df_live['Time'] / 12)
 df_live['Time_cos'] = np.cos(2 * np.pi * df_live['Time'] / 12)
 
-X_live = df_live.drop(['LWQI', 'Code', 'Time'], axis=1)
+# CORRECTED: Drop Seasons just like Aquaculture to avoid app conflicts
+X_live = df_live.drop(['LWQI', 'Code', 'Time', 'Seasons'], axis=1)
 y_live_reg = df_live['LWQI']
 
 X_train_live, X_test_live, y_train_live, y_test_live = train_test_split(
