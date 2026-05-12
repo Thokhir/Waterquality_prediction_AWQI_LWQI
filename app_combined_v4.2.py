@@ -541,135 +541,408 @@ def main():
                 # ============================================================
                 # SECTION 4: DETAILED WATER QUALITY ASSESSMENT & RECOMMENDATIONS
                 # ============================================================
-                st.subheader("💡 Detailed Water Quality Assessment & Recommendations")
-                
-                recommendations = []
-                
+                st.subheader("💡 Comprehensive Water Quality Assessment & Recommendations for ALL Parameters")
+
                 if st.session_state.system == "Aquaculture":
+                    # Extract all AWQI parameters
                     do = input_dict['DO']
                     ammonia = input_dict['Ammonia']
                     ph = input_dict['pH']
                     tds = input_dict['TDS']
                     nitrate = input_dict['Nitrate']
                     chlorides = input_dict['Chlorides']
+                    th = input_dict['TH']
+                    alkalinity = input_dict['Alkalinity']
+                    ec = input_dict['EC']
+    
+                    # 1. DISSOLVED OXYGEN (DO) - CRITICAL PARAMETER
+                    st.markdown("### 1. 🌊 Dissolved Oxygen (DO) - mg/L")
+                    do_status = "Optimal" if do >= 7 else "Good" if do >= 5 else "Moderate" if do >= 4 else "Poor" if do >= 2 else "Critical"
+                    st.markdown(f"**Current: {do:.2f} mg/L | Status: {do_status}**")
                     
-                    # Dissolved Oxygen
                     if do < 2:
-                        recommendations.append(("🚨 CRITICAL - Dissolved Oxygen <2 mg/L (ANOXIC)", 
-                            "Water has NO oxygen. Aquatic life CANNOT survive. Immediate emergency intervention required: Install multiple aeration systems, increase water circulation, partial/complete water replacement, emergency oxygen injection.", 'critical'))
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL</b> - Anoxic conditions. Aquatic life cannot survive. IMMEDIATE ACTION: Install emergency aeration, increase circulation, partial water replacement, oxygen injection.</div>', unsafe_allow_html=True)
                     elif do < 4:
-                        recommendations.append(("🔴 SEVERE - Dissolved Oxygen 2-4 mg/L", 
-                            "Most fish will suffer/die. URGENT intervention: Install aeration system immediately, increase capacity, increase circulation, reduce fish stocking density.", 'critical'))
+                        st.markdown('<div class="warning-box"><b>🔴 SEVERE</b> - Most fish will suffer. URGENT: Install aeration system immediately, increase capacity, reduce stocking density.</div>', unsafe_allow_html=True)
                     elif do < 5:
-                        recommendations.append(("🟠 HIGH - Dissolved Oxygen <5 mg/L", 
-                            "Low oxygen stress. Increase aeration immediately, reduce feed input, increase water circulation, monitor every 6-8 hours.", 'warning'))
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH</b> - Oxygen stress condition. Increase aeration, reduce feeding, increase circulation, monitor every 6-8 hours.</div>', unsafe_allow_html=True)
                     elif do < 7:
-                        recommendations.append(("🟡 MODERATE - Dissolved Oxygen 5-7 mg/L", 
-                            "Below optimal for sensitive species. Consider increasing aeration.", 'info'))
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE</b> - Below optimal. Consider increasing aeration for sensitive species.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT</b> - Optimal dissolved oxygen level for aquaculture.</div>', unsafe_allow_html=True)
                     
-                    # Ammonia
+                    # 2. AMMONIA - CRITICAL PARAMETER
+                    st.markdown("### 2. 🔬 Ammonia (NH₃) - mg/L")
+                    ammonia_status = "Excellent" if ammonia < 0.1 else "Good" if ammonia < 0.5 else "Moderate" if ammonia < 2 else "Poor" if ammonia < 5 else "Critical"
+                    st.markdown(f"**Current: {ammonia:.3f} mg/L | Status: {ammonia_status}**")
+                    
                     if ammonia > 5:
-                        recommendations.append(("🚨 CRITICAL - Ammonia >5 mg/L", 
-                            "SEVERE toxic pollution. Water heavily contaminated. DO NOT use for fish. Immediate treatment: partial/complete water replacement, increase biological filtration, reduce organic input.", 'critical'))
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL</b> - SEVERE toxic pollution. DO NOT use. IMMEDIATE: Complete water replacement, increase biological filtration, stop organic inputs.</div>', unsafe_allow_html=True)
                     elif ammonia > 2:
-                        recommendations.append(("🔴 SEVERE - Ammonia 2-5 mg/L", 
-                            "High toxicity. Significant organic pollution. Urgent water treatment needed: partial water exchange (25-50%), increase filtration, reduce feed.", 'critical'))
+                        st.markdown('<div class="warning-box"><b>🔴 SEVERE</b> - High toxicity. Partial water exchange (25-50%), increase filtration, reduce feeding.</div>', unsafe_allow_html=True)
                     elif ammonia > 0.5:
-                        recommendations.append(("🟠 HIGH - Ammonia >0.5 mg/L", 
-                            "Indicates organic pollution. Improve water circulation, reduce feed input, enhance biological filtration.", 'warning'))
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH</b> - Organic pollution detected. Improve circulation, reduce feeding, enhance filtration.</div>', unsafe_allow_html=True)
                     elif ammonia > 0.1:
-                        recommendations.append(("🟡 MODERATE - Ammonia 0.1-0.5 mg/L", 
-                            "Minor pollution detected. Monitor and consider enhanced filtration.", 'info'))
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE</b> - Minor pollution. Monitor closely and enhance filtration if needed.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT</b> - Minimal ammonia. Excellent organic pollution control.</div>', unsafe_allow_html=True)
                     
-                    # pH
+                    # 3. pH - IMPORTANT PARAMETER
+                    st.markdown("### 3. ⚖️ pH (Acidity/Alkalinity)")
+                    ph_status = "Excellent" if 6.5 <= ph <= 8.5 else "Good" if 6 <= ph <= 9.5 else "Moderate" if 5 <= ph <= 10 else "Poor"
+                    st.markdown(f"**Current: {ph:.2f} | Status: {ph_status}**")
+                    
                     if ph < 4 or ph > 11:
-                        recommendations.append(("🚨 CRITICAL - pH Extreme", 
-                            "Water chemistry severely imbalanced. Immediate pH correction required using appropriate buffers.", 'critical'))
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL pH</b> - Severely imbalanced. IMMEDIATE buffering required using appropriate chemicals.</div>', unsafe_allow_html=True)
                     elif ph < 6 or ph > 9.5:
-                        recommendations.append(("🟠 HIGH - pH Out of Safe Range", 
-                            "Water chemistry imbalanced. Requires pH adjustment using buffers.", 'warning'))
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH pH ISSUE</b> - Out of safe range. Requires buffering adjustment. For low pH: add limestone/sodium bicarbonate. For high pH: use acidifying agents.</div>', unsafe_allow_html=True)
                     elif ph < 6.5 or ph > 8.5:
-                        recommendations.append(("🟡 MODERATE - pH Suboptimal", 
-                            "Consider pH buffering for better conditions.", 'info'))
+                        st.markdown('<div class="info-box"><b>🟡 SUBOPTIMAL pH</b> - Consider buffering for better conditions. Range 6.5-8.5 is ideal for most species.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT pH</b> - Perfect for aquaculture. Stable and suitable.</div>', unsafe_allow_html=True)
                     
-                    # TDS
+                    # 4. TOTAL DISSOLVED SOLIDS (TDS)
+                    st.markdown("### 4. 🧂 Total Dissolved Solids (TDS) - mg/L")
+                    tds_status = "Excellent" if tds < 250 else "Good" if tds < 300 else "Moderate" if tds < 500 else "Poor" if tds < 1000 else "Critical"
+                    st.markdown(f"**Current: {tds:.2f} mg/L | Status: {tds_status}**")
+                    
                     if tds > 1000:
-                        recommendations.append(("🚨 CRITICAL - TDS >1000 mg/L", 
-                            "Water is highly saline. Consider water replacement or dilution.", 'critical'))
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL TDS</b> - Highly saline. Water replacement or major dilution required immediately.</div>', unsafe_allow_html=True)
                     elif tds > 500:
-                        recommendations.append(("🟠 HIGH - TDS >500 mg/L", 
-                            "Salt/mineral accumulation. Monitor and consider water exchange.", 'warning'))
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH TDS</b> - Salt/mineral accumulation detected. Monitor closely and plan water exchange (25-30%).</div>', unsafe_allow_html=True)
                     elif tds > 300:
-                        recommendations.append(("🟡 MODERATE - TDS >300 mg/L", 
-                            "Monitor salt accumulation; partial water change recommended.", 'info'))
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE TDS</b> - Monitor salt accumulation. Partial water change (10-15%) recommended periodically.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT TDS</b> - Optimal mineral content for aquaculture.</div>', unsafe_allow_html=True)
                     
-                    # Nitrate
+                    # 5. NITRATE (Nutrient Pollution)
+                    st.markdown("### 5. 🌿 Nitrate (NO₃⁻) - mg/L")
+                    nitrate_status = "Excellent" if nitrate < 10 else "Good" if nitrate < 25 else "Moderate" if nitrate < 50 else "Poor" if nitrate < 200 else "Critical"
+                    st.markdown(f"**Current: {nitrate:.2f} mg/L | Status: {nitrate_status}**")
+                    
                     if nitrate > 200:
-                        recommendations.append(("🚨 CRITICAL - Nitrate >200 mg/L", 
-                            "Severe nutrient pollution. Immediate biological treatment or water replacement needed.", 'critical'))
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL NITRATE</b> - Severe nutrient pollution. Immediate biological treatment or water replacement needed.</div>', unsafe_allow_html=True)
                     elif nitrate > 50:
-                        recommendations.append(("🟠 HIGH - Nitrate >50 mg/L", 
-                            "Significant pollution. Reduce feed, increase biological filtration, consider partial water change.", 'warning'))
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH NITRATE</b> - Significant pollution. Reduce feeding, increase biological filtration, consider water exchange (20-25%).</div>', unsafe_allow_html=True)
+                    elif nitrate > 25:
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE NITRATE</b> - Elevated nutrients. Reduce feed input and enhance biological filtration.</div>', unsafe_allow_html=True)
                     elif nitrate > 10:
-                        recommendations.append(("🟡 MODERATE - Nitrate >10 mg/L", 
-                            "Elevated nutrient levels. Reduce feed input and enhance filtration.", 'info'))
+                        st.markdown('<div class="info-box"><b>🟡 MINOR ELEVATION</b> - Slight nutrient accumulation. Monitor and maintain good water circulation.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT NITRATE</b> - Minimal nutrient pollution. Excellent water management.</div>', unsafe_allow_html=True)
                     
-                    # Chlorides
+                    # 6. CHLORIDES (Salt Content)
+                    st.markdown("### 6. 🧲 Chlorides (Cl⁻) - mg/L")
+                    chlorides_status = "Excellent" if chlorides < 250 else "Good" if chlorides < 500 else "Moderate" if chlorides < 1000 else "Poor"
+                    st.markdown(f"**Current: {chlorides:.2f} mg/L | Status: {chlorides_status}**")
+                    
                     if chlorides > 1000:
-                        recommendations.append(("🚨 CRITICAL - Chlorides >1000 mg/L", 
-                            "Highly saline water. Immediate dilution or water replacement required.", 'warning'))
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL CHLORIDES</b> - Extremely saline. Immediate dilution or water replacement required.</div>', unsafe_allow_html=True)
                     elif chlorides > 500:
-                        recommendations.append(("🟠 HIGH - Chlorides >500 mg/L", 
-                            "High salt content. Monitor and consider water exchange.", 'warning'))
-                
-                else:  # Livestock
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH CHLORIDES</b> - High salt content. Monitor salinity and plan water exchange (15-20%).</div>', unsafe_allow_html=True)
+                    elif chlorides > 250:
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE CHLORIDES</b> - Monitor salt accumulation. Consider partial water changes if trend increases.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT CHLORIDES</b> - Low salt content, suitable for sensitive species.</div>', unsafe_allow_html=True)
+                    
+                    # 7. TOTAL HARDNESS (TH)
+                    st.markdown("### 7. 🪨 Total Hardness (TH) - mg/L")
+                    th_status = "Excellent" if 50 <= th <= 150 else "Good" if 40 <= th <= 200 else "Moderate" if th < 250 else "High"
+                    st.markdown(f"**Current: {th:.2f} mg/L | Status: {th_status}**")
+                    
+                    if th < 40:
+                        st.markdown('<div class="warning-box"><b>🟠 SOFT WATER</b> - Low calcium/magnesium. Add mineral supplements or lime to buffer water.</div>', unsafe_allow_html=True)
+                    elif th > 200:
+                        st.markdown('<div class="warning-box"><b>🟠 HARD WATER</b> - High calcium/magnesium content. Monitor and consider partial water exchange if fish show stress.</div>', unsafe_allow_html=True)
+                    elif 50 <= th <= 150:
+                        st.markdown('<div class="success-box"><b>✅ OPTIMAL HARDNESS</b> - Perfect balance for most aquaculture species.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="info-box"><b>🟡 ACCEPTABLE</b> - Within tolerable range. Monitor for species-specific needs.</div>', unsafe_allow_html=True)
+                    
+                    # 8. ALKALINITY (Buffering Capacity)
+                    st.markdown("### 8. 🛡️ Alkalinity (Total Alkalinity) - mg/L")
+                    alk_status = "Excellent" if 50 <= alkalinity <= 200 else "Good" if 30 <= alkalinity <= 250 else "Poor"
+                    st.markdown(f"**Current: {alkalinity:.2f} mg/L | Status: {alk_status}**")
+                    
+                    if alkalinity < 30:
+                        st.markdown('<div class="warning-box"><b>🟠 LOW ALKALINITY</b> - Poor buffering capacity. Water pH will fluctuate easily. Add sodium bicarbonate or limestone to increase buffering.</div>', unsafe_allow_html=True)
+                    elif alkalinity > 250:
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH ALKALINITY</b> - Excessive buffering may prevent pH adjustment. Monitor pH closely.</div>', unsafe_allow_html=True)
+                    elif 50 <= alkalinity <= 200:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT ALKALINITY</b> - Good buffering capacity. Water pH remains stable.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="info-box"><b>🟡 ACCEPTABLE</b> - Adequate buffering capacity.</div>', unsafe_allow_html=True)
+                    
+                    # 9. ELECTRICAL CONDUCTIVITY (EC)
+                    st.markdown("### 9. ⚡ Electrical Conductivity (EC) - µS/cm")
+                    ec_status = "Excellent" if 500 <= ec <= 1500 else "Good" if 300 <= ec <= 2000 else "High" if ec > 2000 else "Low"
+                    st.markdown(f"**Current: {ec:.2f} µS/cm | Status: {ec_status}**")
+                    
+                    if ec < 300:
+                        st.markdown('<div class="info-box"><b>🟡 LOW CONDUCTIVITY</b> - Few dissolved ions. Consider adding mineral supplements for optimal growth.</div>', unsafe_allow_html=True)
+                    elif ec > 2000:
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH CONDUCTIVITY</b> - Excessive dissolved salts. Water exchange recommended (20-25%).</div>', unsafe_allow_html=True)
+                    elif 500 <= ec <= 1500:
+                        st.markdown('<div class="success-box"><b>✅ OPTIMAL CONDUCTIVITY</b> - Perfect balance of dissolved minerals for aquaculture.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="info-box"><b>🟡 ACCEPTABLE</b> - Adequate ion content.</div>', unsafe_allow_html=True)
+
+                else:  # LIVESTOCK SYSTEM
+                    # Extract all LWQI parameters
                     do = input_dict['DO']
                     ph = input_dict['pH']
-                    ec = input_dict['EC']
+                    iron = input_dict['Iron']
                     nitrate = input_dict['Nitrate']
+                    sodium = input_dict['Sodium']
+                    sulphates = input_dict['Sulphates']
+                    ec = input_dict['EC']
+                    cah = input_dict['CaH']
                     
-                    if do < 4:
-                        recommendations.append(("🚨 CRITICAL - Low DO", 
-                            "Critical oxygen depletion. Immediate aeration required.", 'critical'))
+                    # 1. DISSOLVED OXYGEN
+                    st.markdown("### 1. 🌊 Dissolved Oxygen (DO) - mg/L")
+                    do_status = "Excellent" if do >= 5 else "Good" if do >= 4 else "Moderate" if do >= 3 else "Poor"
+                    st.markdown(f"**Current: {do:.2f} mg/L | Status: {do_status}**")
+                    
+                    if do < 3:
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL</b> - Severe oxygen depletion. NOT suitable for livestock. Immediate aeration required.</div>', unsafe_allow_html=True)
+                    elif do < 4:
+                        st.markdown('<div class="warning-box"><b>🔴 SEVERE</b> - Critical oxygen levels. Immediate aeration and water circulation needed.</div>', unsafe_allow_html=True)
                     elif do < 5:
-                        recommendations.append(("🟠 HIGH - Suboptimal DO", 
-                            "Improve aeration and water circulation.", 'warning'))
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE</b> - Suboptimal oxygen. Improve aeration and water circulation for better livestock health.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT</b> - Optimal oxygen levels for livestock water.</div>', unsafe_allow_html=True)
+                    
+                    # 2. pH
+                    st.markdown("### 2. ⚖️ pH (Acidity/Alkalinity)")
+                    ph_status = "Excellent" if 6.5 <= ph <= 8.5 else "Good" if 6 <= ph <= 9 else "Moderate" if 5 <= ph <= 10 else "Poor"
+                    st.markdown(f"**Current: {ph:.2f} | Status: {ph_status}**")
                     
                     if ph < 5 or ph > 10:
-                        recommendations.append(("🚨 CRITICAL - Extreme pH", 
-                            "Severe pH imbalance. Immediate correction required.", 'critical'))
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL pH</b> - Severely imbalanced. Water unsuitable for livestock. Immediate correction required.</div>', unsafe_allow_html=True)
                     elif ph < 6 or ph > 9:
-                        recommendations.append(("🟠 HIGH - pH Out of Range", 
-                            "Adjust pH using appropriate buffers.", 'warning'))
+                        st.markdown('<div class="warning-box"><b>🟠 OUT OF RANGE</b> - pH requires adjustment using appropriate buffers. Livestock may refuse water.</div>', unsafe_allow_html=True)
+                    elif ph < 6.5 or ph > 8.5:
+                        st.markdown('<div class="info-box"><b>🟡 SUBOPTIMAL</b> - Acceptable but consider pH buffering for optimal livestock health.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT pH</b> - Perfect for livestock drinking water.</div>', unsafe_allow_html=True)
                     
-                    if ec > 3000:
-                        recommendations.append(("🚨 CRITICAL - Extreme Salinity", 
-                            "Water is extremely saline. Replacement needed.", 'critical'))
-                    elif ec > 2000:
-                        recommendations.append(("🟠 HIGH - High EC", 
-                            "Monitor salinity levels and consider water exchange.", 'warning'))
+                    # 3. IRON
+                    st.markdown("### 3. 🔴 Iron (Fe) - mg/L")
+                    iron_status = "Excellent" if iron < 0.3 else "Good" if iron < 1 else "Moderate" if iron < 2 else "Poor" if iron < 5 else "Critical"
+                    st.markdown(f"**Current: {iron:.3f} mg/L | Status: {iron_status}**")
+                    
+                    if iron > 5:
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL IRON</b> - Extremely high. Water unpalatable to livestock. Requires iron removal (sedimentation, filtration, aeration).</div>', unsafe_allow_html=True)
+                    elif iron > 2:
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH IRON</b> - Livestock may refuse or consume reluctantly. Install aeration and sediment filters to reduce iron.</div>', unsafe_allow_html=True)
+                    elif iron > 1:
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE IRON</b> - Noticeable iron content. Consider aeration and filtration to improve water quality.</div>', unsafe_allow_html=True)
+                    elif iron > 0.3:
+                        st.markdown('<div class="info-box"><b>🟡 MINOR ELEVATION</b> - Slight iron presence. Monitor and maintain good water management.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT IRON</b> - Minimal iron content. Suitable for livestock.</div>', unsafe_allow_html=True)
+                    
+                    # 4. NITRATE
+                    st.markdown("### 4. 🌿 Nitrate (NO₃⁻) - mg/L")
+                    nitrate_status = "Excellent" if nitrate < 50 else "Good" if nitrate < 100 else "Moderate" if nitrate < 200 else "Poor"
+                    st.markdown(f"**Current: {nitrate:.2f} mg/L | Status: {nitrate_status}**")
                     
                     if nitrate > 200:
-                        recommendations.append(("🚨 CRITICAL - High Nitrate", 
-                            "Severe pollution. Immediate treatment required.", 'critical'))
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL NITRATE</b> - Severe pollution. Water unsuitable for livestock. Requires treatment or replacement.</div>', unsafe_allow_html=True)
+                    elif nitrate > 100:
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH NITRATE</b> - High pollution levels. Not ideal for livestock. Consider water exchange (30-40%).</div>', unsafe_allow_html=True)
                     elif nitrate > 50:
-                        recommendations.append(("🟠 HIGH - Elevated Nitrate", 
-                            "Reduce pollution sources and monitor closely.", 'warning'))
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE NITRATE</b> - Elevated nutrients. Monitor and improve water management to reduce pollution sources.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT NITRATE</b> - Low pollution. Suitable for livestock.</div>', unsafe_allow_html=True)
+                    
+                    # 5. SODIUM (Na)
+                    st.markdown("### 5. 🧂 Sodium (Na) - mg/L")
+                    sodium_status = "Excellent" if sodium < 50 else "Good" if sodium < 100 else "Moderate" if sodium < 200 else "High"
+                    st.markdown(f"**Current: {sodium:.2f} mg/L | Status: {sodium_status}**")
+                    
+                    if sodium > 200:
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH SODIUM</b> - Excessive salt. Livestock may show salt toxicity signs. Water exchange recommended.</div>', unsafe_allow_html=True)
+                    elif sodium > 100:
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE SODIUM</b> - Elevated salt levels. Monitor livestock health and consider water exchange if issues arise.</div>', unsafe_allow_html=True)
+                    elif sodium > 50:
+                        st.markdown('<div class="info-box"><b>🟡 MINOR ELEVATION</b> - Slight salt presence. Acceptable for most livestock.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT SODIUM</b> - Low salt content. Ideal for livestock.</div>', unsafe_allow_html=True)
+                    
+                    # 6. SULPHATES
+                    st.markdown("### 6. 💛 Sulphates (SO₄²⁻) - mg/L")
+                    sulphates_status = "Excellent" if sulphates < 250 else "Good" if sulphates < 500 else "Moderate" if sulphates < 1000 else "High"
+                    st.markdown(f"**Current: {sulphates:.2f} mg/L | Status: {sulphates_status}**")
+                    
+                    if sulphates > 1000:
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH SULPHATES</b> - Excessive levels may cause diarrhea in livestock. Water exchange advised.</div>', unsafe_allow_html=True)
+                    elif sulphates > 500:
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE SULPHATES</b> - Elevated sulphate levels. Monitor livestock health for digestive issues.</div>', unsafe_allow_html=True)
+                    elif sulphates > 250:
+                        st.markdown('<div class="info-box"><b>🟡 MINOR ELEVATION</b> - Slight sulphate increase. Generally acceptable.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT SULPHATES</b> - Low sulphate content. Ideal for livestock.</div>', unsafe_allow_html=True)
+                    
+                    # 7. ELECTRICAL CONDUCTIVITY (EC)
+                    st.markdown("### 7. ⚡ Electrical Conductivity (EC) - µS/cm")
+                    ec_status = "Excellent" if ec < 1500 else "Good" if ec < 2000 else "Moderate" if ec < 3000 else "High"
+                    st.markdown(f"**Current: {ec:.2f} µS/cm | Status: {ec_status}**")
+                    
+                    if ec > 3000:
+                        st.markdown('<div class="critical-box"><b>🚨 CRITICAL SALINITY</b> - Extremely high. Water unpalatable to livestock. Replacement needed.</div>', unsafe_allow_html=True)
+                    elif ec > 2000:
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH SALINITY</b> - Excessive salts. Livestock may refuse water. Consider water exchange (25-30%).</div>', unsafe_allow_html=True)
+                    elif ec > 1500:
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE SALINITY</b> - Elevated salt levels. Monitor livestock water consumption and adjust if needed.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT CONDUCTIVITY</b> - Low salinity. Optimal for livestock.</div>', unsafe_allow_html=True)
+                    
+                    # 8. CALCIUM HARDNESS
+                    st.markdown("### 8. 🪨 Calcium Hardness (CaH) - mg/L")
+                    cah_status = "Excellent" if cah < 100 else "Good" if cah < 200 else "Moderate" if cah < 300 else "High"
+                    st.markdown(f"**Current: {cah:.2f} mg/L | Status: {cah_status}**")
+                    
+                    if cah > 300:
+                        st.markdown('<div class="warning-box"><b>🟠 HIGH HARDNESS</b> - Water very hard. Livestock may show reduced water intake. Consider partial water exchange.</div>', unsafe_allow_html=True)
+                    elif cah > 200:
+                        st.markdown('<div class="info-box"><b>🟡 MODERATE HARDNESS</b> - Harder water. Generally acceptable for livestock but monitor consumption.</div>', unsafe_allow_html=True)
+                    elif cah > 100:
+                        st.markdown('<div class="info-box"><b>🟡 SLIGHT HARDNESS</b> - Mild calcium content. Acceptable for livestock.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="success-box"><b>✅ EXCELLENT HARDNESS</b> - Soft to moderately hard water. Ideal for livestock.</div>', unsafe_allow_html=True)
+
+                st.markdown("---")
+                st.markdown("**✅ Comprehensive Parameter Assessment Complete**")
+                # st.subheader("💡 Detailed Water Quality Assessment & Recommendations")
                 
-                # Display recommendations
-                if recommendations:
-                    for title, desc, rec_type in recommendations:
-                        if rec_type == 'critical':
-                            st.markdown(f'<div class="critical-box"><b>{title}</b><br>{desc}</div>', unsafe_allow_html=True)
-                        elif rec_type == 'warning':
-                            st.markdown(f'<div class="warning-box"><b>{title}</b><br>{desc}</div>', unsafe_allow_html=True)
-                        else:
-                            st.markdown(f'<div class="info-box"><b>{title}</b><br>{desc}</div>', unsafe_allow_html=True)
-                else:
-                    st.markdown(
-                        '<div class="success-box">✅ All parameters within excellent ranges! Water quality is perfect for all uses.</div>',
-                        unsafe_allow_html=True
-                    )
+                # recommendations = []
+                
+                # if st.session_state.system == "Aquaculture":
+                #     do = input_dict['DO']
+                #     ammonia = input_dict['Ammonia']
+                #     ph = input_dict['pH']
+                #     tds = input_dict['TDS']
+                #     nitrate = input_dict['Nitrate']
+                #     chlorides = input_dict['Chlorides']
+                    
+                #     # Dissolved Oxygen
+                #     if do < 2:
+                #         recommendations.append(("🚨 CRITICAL - Dissolved Oxygen <2 mg/L (ANOXIC)", 
+                #             "Water has NO oxygen. Aquatic life CANNOT survive. Immediate emergency intervention required: Install multiple aeration systems, increase water circulation, partial/complete water replacement, emergency oxygen injection.", 'critical'))
+                #     elif do < 4:
+                #         recommendations.append(("🔴 SEVERE - Dissolved Oxygen 2-4 mg/L", 
+                #             "Most fish will suffer/die. URGENT intervention: Install aeration system immediately, increase capacity, increase circulation, reduce fish stocking density.", 'critical'))
+                #     elif do < 5:
+                #         recommendations.append(("🟠 HIGH - Dissolved Oxygen <5 mg/L", 
+                #             "Low oxygen stress. Increase aeration immediately, reduce feed input, increase water circulation, monitor every 6-8 hours.", 'warning'))
+                #     elif do < 7:
+                #         recommendations.append(("🟡 MODERATE - Dissolved Oxygen 5-7 mg/L", 
+                #             "Below optimal for sensitive species. Consider increasing aeration.", 'info'))
+                    
+                #     # Ammonia
+                #     if ammonia > 5:
+                #         recommendations.append(("🚨 CRITICAL - Ammonia >5 mg/L", 
+                #             "SEVERE toxic pollution. Water heavily contaminated. DO NOT use for fish. Immediate treatment: partial/complete water replacement, increase biological filtration, reduce organic input.", 'critical'))
+                #     elif ammonia > 2:
+                #         recommendations.append(("🔴 SEVERE - Ammonia 2-5 mg/L", 
+                #             "High toxicity. Significant organic pollution. Urgent water treatment needed: partial water exchange (25-50%), increase filtration, reduce feed.", 'critical'))
+                #     elif ammonia > 0.5:
+                #         recommendations.append(("🟠 HIGH - Ammonia >0.5 mg/L", 
+                #             "Indicates organic pollution. Improve water circulation, reduce feed input, enhance biological filtration.", 'warning'))
+                #     elif ammonia > 0.1:
+                #         recommendations.append(("🟡 MODERATE - Ammonia 0.1-0.5 mg/L", 
+                #             "Minor pollution detected. Monitor and consider enhanced filtration.", 'info'))
+                    
+                #     # pH
+                #     if ph < 4 or ph > 11:
+                #         recommendations.append(("🚨 CRITICAL - pH Extreme", 
+                #             "Water chemistry severely imbalanced. Immediate pH correction required using appropriate buffers.", 'critical'))
+                #     elif ph < 6 or ph > 9.5:
+                #         recommendations.append(("🟠 HIGH - pH Out of Safe Range", 
+                #             "Water chemistry imbalanced. Requires pH adjustment using buffers.", 'warning'))
+                #     elif ph < 6.5 or ph > 8.5:
+                #         recommendations.append(("🟡 MODERATE - pH Suboptimal", 
+                #             "Consider pH buffering for better conditions.", 'info'))
+                    
+                #     # TDS
+                #     if tds > 1000:
+                #         recommendations.append(("🚨 CRITICAL - TDS >1000 mg/L", 
+                #             "Water is highly saline. Consider water replacement or dilution.", 'critical'))
+                #     elif tds > 500:
+                #         recommendations.append(("🟠 HIGH - TDS >500 mg/L", 
+                #             "Salt/mineral accumulation. Monitor and consider water exchange.", 'warning'))
+                #     elif tds > 300:
+                #         recommendations.append(("🟡 MODERATE - TDS >300 mg/L", 
+                #             "Monitor salt accumulation; partial water change recommended.", 'info'))
+                    
+                #     # Nitrate
+                #     if nitrate > 200:
+                #         recommendations.append(("🚨 CRITICAL - Nitrate >200 mg/L", 
+                #             "Severe nutrient pollution. Immediate biological treatment or water replacement needed.", 'critical'))
+                #     elif nitrate > 50:
+                #         recommendations.append(("🟠 HIGH - Nitrate >50 mg/L", 
+                #             "Significant pollution. Reduce feed, increase biological filtration, consider partial water change.", 'warning'))
+                #     elif nitrate > 10:
+                #         recommendations.append(("🟡 MODERATE - Nitrate >10 mg/L", 
+                #             "Elevated nutrient levels. Reduce feed input and enhance filtration.", 'info'))
+                    
+                #     # Chlorides
+                #     if chlorides > 1000:
+                #         recommendations.append(("🚨 CRITICAL - Chlorides >1000 mg/L", 
+                #             "Highly saline water. Immediate dilution or water replacement required.", 'warning'))
+                #     elif chlorides > 500:
+                #         recommendations.append(("🟠 HIGH - Chlorides >500 mg/L", 
+                #             "High salt content. Monitor and consider water exchange.", 'warning'))
+                
+                # else:  # Livestock
+                #     do = input_dict['DO']
+                #     ph = input_dict['pH']
+                #     ec = input_dict['EC']
+                #     nitrate = input_dict['Nitrate']
+                    
+                #     if do < 4:
+                #         recommendations.append(("🚨 CRITICAL - Low DO", 
+                #             "Critical oxygen depletion. Immediate aeration required.", 'critical'))
+                #     elif do < 5:
+                #         recommendations.append(("🟠 HIGH - Suboptimal DO", 
+                #             "Improve aeration and water circulation.", 'warning'))
+                    
+                #     if ph < 5 or ph > 10:
+                #         recommendations.append(("🚨 CRITICAL - Extreme pH", 
+                #             "Severe pH imbalance. Immediate correction required.", 'critical'))
+                #     elif ph < 6 or ph > 9:
+                #         recommendations.append(("🟠 HIGH - pH Out of Range", 
+                #             "Adjust pH using appropriate buffers.", 'warning'))
+                    
+                #     if ec > 3000:
+                #         recommendations.append(("🚨 CRITICAL - Extreme Salinity", 
+                #             "Water is extremely saline. Replacement needed.", 'critical'))
+                #     elif ec > 2000:
+                #         recommendations.append(("🟠 HIGH - High EC", 
+                #             "Monitor salinity levels and consider water exchange.", 'warning'))
+                    
+                #     if nitrate > 200:
+                #         recommendations.append(("🚨 CRITICAL - High Nitrate", 
+                #             "Severe pollution. Immediate treatment required.", 'critical'))
+                #     elif nitrate > 50:
+                #         recommendations.append(("🟠 HIGH - Elevated Nitrate", 
+                #             "Reduce pollution sources and monitor closely.", 'warning'))
+                
+                # # Display recommendations
+                # if recommendations:
+                #     for title, desc, rec_type in recommendations:
+                #         if rec_type == 'critical':
+                #             st.markdown(f'<div class="critical-box"><b>{title}</b><br>{desc}</div>', unsafe_allow_html=True)
+                #         elif rec_type == 'warning':
+                #             st.markdown(f'<div class="warning-box"><b>{title}</b><br>{desc}</div>', unsafe_allow_html=True)
+                #         else:
+                #             st.markdown(f'<div class="info-box"><b>{title}</b><br>{desc}</div>', unsafe_allow_html=True)
+                # else:
+                #     st.markdown(
+                #         '<div class="success-box">✅ All parameters within excellent ranges! Water quality is perfect for all uses.</div>',
+                #         unsafe_allow_html=True
+                #     )
                 
                 # ============================================================
                 # IMPORTANT NOTE (ALWAYS SHOWN)
